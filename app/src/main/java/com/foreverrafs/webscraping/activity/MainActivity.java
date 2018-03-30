@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -16,11 +15,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.foreverrafs.webscraping.R;
@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MusicAdapter.ClickListener, DownloadDialog.DownloadDialogListener, MusicAdapter.ViewsBoundedListener, ScrappingEventsListener, MusicPlayer.PlayerStatesListener {
+public class MainActivity extends AppCompatActivity implements MusicAdapter.ClickListener, DownloadDialog.DownloadDialogListener, MusicAdapter.ViewsBoundedListener, ScrappingEventsListener, MusicPlayer.PlayerStatesListener, AdapterView.OnItemSelectedListener {
     private final String TAG = "musicscrapper";
     private MusicAdapter musicAdapter;
     private MusicPlayer musicPlayer;
@@ -51,9 +51,11 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     private MusicAdapter.MusicViewHolder prevHolder;
 
     private final int writePermission = 1000;
+    private boolean intendedTouch = false;
 
-    private boolean initialFetch = false;
+    private boolean initialFetchCompleted = false;
     private Music musicToDownload;
+    View fetchedSongsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             startActivity(new Intent(this, activity_no_network.class));
             finish();
         }
+
+        fetchedSongsView = getLayoutInflater().inflate(R.layout.fragment_fragment_home, null);
     }
 
 
@@ -104,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         playBtnLarge = findViewById(R.id.mediaPlayBtn);
 
         List<String> pageList = new ArrayList<>();
-        for(int a  = 1; a < 10; a++){
-           pageList.add("Page "+a);
+        for (int a = 1; a < 10; a++) {
+            pageList.add("Page " + a);
         }
 
 
@@ -113,13 +117,21 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         Spinner spinner = findViewById(R.id.pageNum);
         spinner.setAdapter(pageListAdapter);
 
+        spinner.setOnItemSelectedListener(this);
+        spinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                intendedTouch = true;
+                return false;
+            }
+        });
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (initialFetch) {
+        if (initialFetchCompleted) {
             Log.i(TAG, "Song list has already been fetched::::Suspending");
             return;
         }
@@ -162,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
         Log.i(TAG, musicScraper.getState().toString());
         try {
-            if (!initialFetch) setContentView(R.layout.fragment_fragment_loading);
+            if (!initialFetchCompleted) setContentView(R.layout.fragment_fragment_loading);
             musicScraper.execute(urls);
         } catch (Exception ex) {
             Log.i(TAG, ex.getMessage());
@@ -250,13 +262,15 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     @Override
     public void onScrappingCompleted(List<Music> musicList) {
-        setContentView(R.layout.fragment_fragment_home);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-        init();
-        initialFetch = true;
 
+        if (!initialFetchCompleted) {
+            setContentView(fetchedSongsView);
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            toolbar.setTitle("");
+            setSupportActionBar(toolbar);
+            init();
+            initialFetchCompleted = true;
+        }
 
         Log.i(TAG, "scrapping completed with " + musicList.size() + " items returned");
 
@@ -273,8 +287,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(musicAdapter);
-        Spinner pageNum = findViewById(R.id.pageNum);
-
     }
 
     @Override
@@ -353,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             Log.i(TAG, holder.getTitle());
             setStateChanges(musicPlayer.getPlayerState(), null, holder);
 
-
         }
     }
 
@@ -364,6 +375,27 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (!intendedTouch) {
+            Log.i(TAG, "Event fired unnecessarily::::Suspending");
+            return;
+        }
+
+        Log.i(TAG, "Fetching for page: " + (position + 1));
+        if (!initialFetchCompleted) {
+            Log.i(TAG, "Initial fetch isn't completed yet::::Suspending");
+            return;
+        }
+        scrapWebsite(String.format("http://www.ghanamotion.com/music/page%s", (position + 1)));
+        intendedTouch = false;
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

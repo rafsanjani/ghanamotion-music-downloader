@@ -42,15 +42,15 @@ public class Music {
     }
 
     private String hash;
-    private boolean badSong;
+    private boolean incompleteSong;
 
 
-    public boolean getBadSong(){
-        return badSong;
+    public boolean isIncompleteSong(){
+        return incompleteSong;
     }
 
-    public void setBadSong(boolean badSong){
-         this.badSong = badSong;
+    public void setIncompleteSong(boolean incompleteSong){
+         this.incompleteSong = incompleteSong;
     }
     public String getUrl() {
         return url;

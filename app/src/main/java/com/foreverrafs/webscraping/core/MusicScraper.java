@@ -54,7 +54,7 @@ public class MusicScraper extends AsyncTask<String, Long, List<Music>> {
 
         while (iterator.hasNext()) {
             Music music = iterator.next();
-            if (music.getBadSong()) {
+            if (music.isIncompleteSong()) {
                 iterator.remove();
             }
         }
@@ -111,7 +111,7 @@ public class MusicScraper extends AsyncTask<String, Long, List<Music>> {
 
                     } catch (Exception e) {
                         Log.i(TAG, "Scrapper Error" + e.getMessage());
-                        music.setBadSong(true);
+                        music.setIncompleteSong(true);
                     }
                     musicList.add(music);
                 }

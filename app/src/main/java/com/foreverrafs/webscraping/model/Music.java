@@ -6,22 +6,31 @@ package com.foreverrafs.webscraping.model;
  */
 
 public class Music {
-    String url;
+    private String title, imageUrl, songUrl;
+    private double fileSize;
 
-    public void setUrl(String url) {
-        this.url = url;
+    public Music(String songUrl, String title, String image, String hash) {
+        this.songUrl = songUrl;
+        this.title = title;
+        this.imageUrl = image;
+        this.hash = hash;
+    }
+
+    public Music() {
+    }
+
+
+    public void setSongUrl(String songUrl) {
+        this.songUrl = songUrl;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
-
-    private String title;
-    private String image;
 
     public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
@@ -30,8 +39,6 @@ public class Music {
     public double getFileSize() {
         return fileSize;
     }
-
-    private double fileSize;
 
     public void setHash(String hash) {
         this.hash = hash;
@@ -45,32 +52,23 @@ public class Music {
     private boolean incompleteSong;
 
 
-    public boolean isIncompleteSong(){
+    public boolean isIncompleteSong() {
         return incompleteSong;
     }
 
-    public void setIncompleteSong(boolean incompleteSong){
-         this.incompleteSong = incompleteSong;
+    public void setIncompleteSong(boolean incompleteSong) {
+        this.incompleteSong = incompleteSong;
     }
-    public String getUrl() {
-        return url;
+
+    public String getSongUrl() {
+        return songUrl;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public Music(String url, String title, String image, String hash) {
-        this.url = url;
-        this.title = title;
-        this.image = image;
-        this.hash = hash;
-    }
-
-    public Music() {
+    public String getImageUrl() {
+        return imageUrl;
     }
 }

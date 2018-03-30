@@ -91,20 +91,20 @@ public class MusicScraper extends AsyncTask<String, Long, List<Music>> {
                         String imgUrl = imageElement.attr("src");
 
                         music.setTitle(titleElement.text());
-                        music.setUrl(mp3Url);
-                        music.setImage(imgUrl);
+                        music.setSongUrl(mp3Url);
+                        music.setImageUrl(imgUrl);
 
 
-                        String hash = new String(Hex.encodeHex(DigestUtils.md5(music.getTitle() + music.getUrl())));
+                        String hash = new String(Hex.encodeHex(DigestUtils.md5(music.getTitle() + music.getSongUrl())));
                         music.setHash(hash);
 
-                        URLConnection urlConnection = new URL(music.getUrl()).openConnection();
+                        URLConnection urlConnection = new URL(music.getSongUrl()).openConnection();
                         urlConnection.connect();
                         music.setFileSize(urlConnection.getContentLength());
 
                         Log.i(TAG, "Title: " + music.getTitle());
-                        Log.i(TAG, "url: " + music.getUrl());
-                        Log.i(TAG, "Image Url: " + music.getImage() + "\\n");
+                        Log.i(TAG, "url: " + music.getSongUrl());
+                        Log.i(TAG, "Image Url: " + music.getImageUrl() + "\\n");
                         Log.i(TAG, "Hash : " + music.getHash());
                         Log.i(TAG, "Size : " + music.getFileSize());
 

@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     private void downloadMusic(Music music) {
         Toast.makeText(this, "Music is being downloaded...", Toast.LENGTH_LONG).show();
         Log.i(TAG, "Downloading " + music.getTitle());
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(music.getUrl()));
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(music.getSongUrl()));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, music.getTitle() + ".mp3");
 

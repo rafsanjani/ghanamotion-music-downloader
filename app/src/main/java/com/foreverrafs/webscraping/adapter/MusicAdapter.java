@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.foreverrafs.webscraping.R;
 import com.foreverrafs.webscraping.model.Music;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import java.util.List;
 
@@ -81,7 +80,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
 
         try {
             Picasso.get()
-                    .load(music.getImage())
+                    .load(music.getImageUrl())
                     .resize(250, 250)
                     .placeholder(R.drawable.music)
                     .error(R.drawable.music)

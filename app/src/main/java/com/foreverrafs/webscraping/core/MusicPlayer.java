@@ -89,7 +89,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                 } else {
                     Log.i(TAG, "New file detected::::attempting to play::" + music.getTitle());
                     player.reset();
-                    player.setDataSource(music.getUrl());
+                    player.setDataSource(music.getSongUrl());
                     //if (!isPreparing) {
                         player.prepareAsync();
                      //   isPreparing = true;
@@ -108,7 +108,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                 } else {
                     Log.i(TAG, "New file detected::::attempting to play::" + music.getTitle());
                     player.reset();
-                    player.setDataSource(music.getUrl());
+                    player.setDataSource(music.getSongUrl());
                     setCurrentMusic(music);
                    // if (!isPreparing) {
                         player.prepareAsync();
@@ -120,7 +120,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
 
             case stopped:
                 Log.i(TAG, "Music is stopped :: Attempting to start from beginning");
-                player.setDataSource(music.getUrl());
+                player.setDataSource(music.getSongUrl());
                 setCurrentMusic(music);
                // if (!isPreparing) {
                     player.prepareAsync();

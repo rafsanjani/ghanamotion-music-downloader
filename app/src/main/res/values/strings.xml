@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Rafs Music Downloader</string>
+    <string name="title_activity_no_network">activity_no_network</string>
+    <string name="no_internet">Uh uhhh....U know it\'s the 21st century, We can\'t do without the INTERNET...</string>
+    <string name="adding_dessert">Adding dessert......</string>
+    <string name="song_title">Title</string>
+    <string name="play">Play</string>
+    <string name="file_size">File size: </string>
+    <string name="title_activity_splash">SplashActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

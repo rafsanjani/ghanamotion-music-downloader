@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_primary">#E91E63</color>
+    <color name="color_primary_dark">#C2185B</color>
+    <color name="accent_color">#EC407A</color>
+    <color name="item_playing">#fce4ec</color>
+    <color name="text_file_size">#880E4F</color>
+    <color name="media_bg">#283034</color>
+    <color name="toolbar">#bdbdbd</color>
+</resources>

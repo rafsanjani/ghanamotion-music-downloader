@@ -80,7 +80,6 @@
                     android:background="@null"
                     android:src="@drawable/download_small" />
 
-
                 <ImageButton
                     android:id="@+id/playBtnMain"
                     android:layout_width="wrap_content"

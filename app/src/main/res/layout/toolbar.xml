@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="@color/toolbar"
-    android:padding="5dp"
+    android:padding="3dp"
     android:elevation="4dp"
     app:logo="@drawable/music_small"
     app:title=""

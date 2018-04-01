@@ -110,7 +110,8 @@ public class MusicScraper extends AsyncTask<String, Long, List<Music>> {
 
 
                     } catch (Exception e) {
-                        Log.i(TAG, "Scrapper Error" + e.getMessage());
+                        Log.i(TAG, "Scrapper Error " );
+                        e.printStackTrace();
                         music.setIncompleteSong(true);
                     }
                     musicList.add(music);

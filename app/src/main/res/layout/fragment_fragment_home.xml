@@ -16,6 +16,11 @@
         android:visibility="visible" />
 
     <include
+        android:id="@+id/search_empty_layout"
+        layout="@layout/search_result_empty"
+        android:visibility="gone" />
+
+    <include
         android:id="@+id/loading"
         layout="@layout/progress_loading_overlay" />
 

@@ -9,4 +9,9 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="toolbar_goto">Go To:</string>
     <string name="search">Search...</string>
+    <string name="empty_story">
+        Once Upon a time.......A few mistakes ago, during a time when there was nothing like the internet, man lived happily.
+        People actually visited people to find out if they were fine. Then the Internet came to destroy it all.........
+        Excerpt from "The Internet: mankind's shadow enemy or saviour in flesh?" - Rafsanjani Abdul Aziz Yaah Waduudu
+    </string>
 </resources>

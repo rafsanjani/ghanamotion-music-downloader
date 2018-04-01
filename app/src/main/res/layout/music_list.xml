@@ -55,29 +55,39 @@
                     android:layout_gravity="bottom|start"
                     android:layout_marginBottom="3dp"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:text="@string/file_size"
                     android:textColor="@color/text_file_size"
                     android:textStyle="italic" />
+
+                <ProgressBar
+                    android:id="@+id/loadingProgress"
+                    style="?android:progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="@dimen/std_margin_bottom"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/downloadBtnMain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:layout_marginBottom="3dp"
+                    android:layout_marginBottom="@dimen/std_margin_bottom"
                     android:layout_marginRight="10dp"
                     android:background="@null"
-                    android:contentDescription="@string/play"
                     android:src="@drawable/download_small" />
+
 
                 <ImageButton
                     android:id="@+id/playBtnMain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:layout_marginBottom="4dp"
                     android:background="@null"
-                    android:contentDescription="@string/play"
                     android:src="@drawable/play_small" />
 
 

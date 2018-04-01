@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     }
 
+    //TODO: Cache the search results for faster future searches and delete caches older than 5 hours or make it adjustable by user
     @Override
     public void onScrappingCompleted(List<Music> musicList) {
 

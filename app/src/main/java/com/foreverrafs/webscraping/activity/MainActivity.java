@@ -6,6 +6,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -221,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         prevHolder = (MusicAdapter.MusicViewHolder) recyclerView.findViewHolderForAdapterPosition(prevPosition);
 
         Music music = musicAdapter.getSongAt(position);
-        
+
         switch (view.getId()) {
             case R.id.playBtnMain:
                 Log.i(TAG, "Play/Pause Button Invoked:::::position = " + position + ":::Previous Position = " + prevPosition);
@@ -378,6 +379,12 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             playBtnLarge.setBackground(getResources().getDrawable(R.drawable.button_normal));
         }
         */
+    }
+
+    @Override
+    public void onError(MediaPlayer mp) {
+        Log.e(TAG, "Error playing media");
+        Toast.makeText(MainActivity.this, "Error during playback!", Toast.LENGTH_LONG).show();
     }
 
     @Override

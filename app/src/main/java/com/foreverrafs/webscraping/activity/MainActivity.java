@@ -23,7 +23,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,14 +48,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MusicAdapter.ClickListener, DownloadDialog.DownloadDialogListener, MusicAdapter.ViewsBoundedListener, ScrappingEventsListener, MusicPlayer.PlayerStatesListener, AdapterView.OnItemSelectedListener {
     private final String TAG = "musicscrapper";
+    private final int writePermission = 1000;
     private MusicAdapter musicAdapter;
     private MusicPlayer musicPlayer;
     private RecyclerView recyclerView;
-
     private MusicAdapter.MusicViewHolder holder;
     private MusicAdapter.MusicViewHolder prevHolder;
-
-    private final int writePermission = 1000;
     private boolean intendedTouch = false;
 
     private boolean initialFetchCompleted = false;
@@ -65,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     private View progressBarLoadingOverlay;
 
     private SearchView searchView;
+    private ImageButton playBtnLarge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +78,8 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         fetchedSongsView = getLayoutInflater().inflate(R.layout.fragment_fragment_home, null);
     }
 
-
     private void init() {
-        progressBarLoadingOverlay =  findViewById(R.id.loading);
+        progressBarLoadingOverlay = findViewById(R.id.loading);
         recyclerView = findViewById(R.id.musicList);
         //searchView = findViewById(R.id.search_view);
         final LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
@@ -164,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         });
 
     }
-
 
     @Override
     protected void onStart() {
@@ -298,7 +294,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     }
 
-
     @Override
     public void onScrappingCompleted(List<Music> musicList) {
 
@@ -334,8 +329,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     public void onScrappingStarted() {
         Log.i(TAG, "Background Scrapper job has started :::");
     }
-
-    private ImageButton playBtnLarge;
 
     @Override
     public void onPlaying(Music music) {
@@ -431,6 +424,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             Log.i(TAG, "Initial fetch isn't completed yet::::Suspending");
             return;
         }
+        fetchedSongsView.findViewById(R.id.loading).setVisibility(View.VISIBLE);
         scrapWebsite(String.format("http://www.ghanamotion.com/music/page%s", (position + 1)));
         intendedTouch = false;
     }

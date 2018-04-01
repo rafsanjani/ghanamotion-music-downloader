@@ -221,8 +221,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         prevHolder = (MusicAdapter.MusicViewHolder) recyclerView.findViewHolderForAdapterPosition(prevPosition);
 
         Music music = musicAdapter.getSongAt(position);
-
-        //FIXME: pausing only works for first page and doesn't work when other pages are loaded
+        
         switch (view.getId()) {
             case R.id.playBtnMain:
                 Log.i(TAG, "Play/Pause Button Invoked:::::position = " + position + ":::Previous Position = " + prevPosition);

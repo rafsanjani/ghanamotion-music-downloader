@@ -73,23 +73,26 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
     }
 
     //TODO: Refactor up this portion of code for readability by performing appropriate method calls
-    public void play(Music music) throws IOException {
+    public void play(Music selectedMusic) throws IOException {
+        //get a handle to the currently loaded music in memory
+        Music currentMusic = getCurrentMusic();
 
         switch (getPlayerState()) {
-
             case playing:
                 Log.i(TAG, "Currently playing song :::" + getCurrentMusic().getTitle());
 
                 //if it's the same song, just pause, else stop the current song and play the new song
-                if (getCurrentMusic().getHash() == music.getHash()) {
+                if (currentMusic.getHash() == selectedMusic.getHash()) {
                     Log.i(TAG, "Attempting to Pause");
                     player.pause();
-                    playerStatesListener.onPaused(music);
+                    playerStatesListener.onPaused(selectedMusic);
                     setPlayerState(PlayerState.paused);
                 } else {
-                    Log.i(TAG, "New file detected::::attempting to play::" + music.getTitle());
+                    Log.i(TAG, "New file detected::::attempting to play::" + selectedMusic.getTitle());
                     player.reset();
-                    player.setDataSource(music.getSongUrl());
+
+                    setCurrentMusic(selectedMusic);
+                    player.setDataSource(selectedMusic.getSongUrl());
                     //if (!isPreparing) {
                         player.prepareAsync();
                      //   isPreparing = true;
@@ -99,17 +102,17 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                 break;
             case paused:
                 //if it's the same song, just resume it, else stop it altogether and play the new song
-                if (getCurrentMusic().getHash() == music.getHash()) {
+                if (currentMusic.getHash() == selectedMusic.getHash()) {
                     Log.i(TAG, "Music is Paused::Attempting to resume");
-                    Log.i(TAG, "Successfully Resumed::::Playing " + music.getTitle());
+                    Log.i(TAG, "Successfully Resumed::::Playing " + selectedMusic.getTitle());
                     player.start();
                     setPlayerState(PlayerState.playing);
-                    playerStatesListener.onPlaying(music);
+                    playerStatesListener.onPlaying(selectedMusic);
                 } else {
-                    Log.i(TAG, "New file detected::::attempting to play::" + music.getTitle());
+                    Log.i(TAG, "New file detected::::attempting to play::" + selectedMusic.getTitle());
                     player.reset();
-                    player.setDataSource(music.getSongUrl());
-                    setCurrentMusic(music);
+                    player.setDataSource(selectedMusic.getSongUrl());
+                    setCurrentMusic(selectedMusic);
                    // if (!isPreparing) {
                         player.prepareAsync();
                     //    isPreparing = true;
@@ -120,8 +123,8 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
 
             case stopped:
                 Log.i(TAG, "Music is stopped :: Attempting to start from beginning");
-                player.setDataSource(music.getSongUrl());
-                setCurrentMusic(music);
+                player.setDataSource(selectedMusic.getSongUrl());
+                setCurrentMusic(selectedMusic);
                // if (!isPreparing) {
                     player.prepareAsync();
                 //    isPreparing = true;

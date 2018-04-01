@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:padding="5dp"
     android:background="@color/toolbar"
+    android:padding="5dp"
     app:logo="@drawable/music_small"
     app:title=""
     tools:context=".activity.MainActivity">
@@ -12,6 +12,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/toolbar_margin_left"
+        android:layout_marginStart="@dimen/toolbar_margin_left"
         android:text="@string/toolbar_goto"
         android:textSize="15sp" />
 
@@ -22,16 +24,16 @@
 
     <EditText
         android:id="@+id/searchSong"
+        style="@style/AppTheme.SearchEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
+        android:drawableEnd="@drawable/ic_action_action_search"
         android:drawableRight="@drawable/ic_action_action_search"
         android:hint="@string/search"
         android:imeOptions="actionDone"
-        android:inputType="textAutoComplete"
-        android:maxLines="1"
-        android:drawableEnd="@drawable/ic_action_action_search" />
+        android:inputType="textAutoComplete" />
 
 
 </android.support.v7.widget.Toolbar>

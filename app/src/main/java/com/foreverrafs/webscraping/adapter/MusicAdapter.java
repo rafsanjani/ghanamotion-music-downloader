@@ -31,7 +31,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
     private Context mCtx;
     private List<Music> musicList;
     private ClickListener clickListener;
-    private ViewsBoundedListener viewsBoundedListener;
+
     private int adapterPosition = -1;
 
     public MusicAdapter() {
@@ -50,9 +50,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         this.clickListener = clickListener;
     }
 
-    public void setViewsBoundedListener(ViewsBoundedListener viewsBoundedListener) {
-        this.viewsBoundedListener = viewsBoundedListener;
-    }
 
     @NonNull
     @Override
@@ -86,7 +83,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                     .placeholder(R.drawable.music)
                     .error(R.drawable.music)
                     .into(holder.albumArt);
-            viewsBoundedListener.onBindView(position);
+
 
             // holder.albumArt.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.music));
         } catch (Exception ex) {
@@ -185,7 +182,4 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         void itemClicked(View view, int position, int prevPosition);
     }
 
-    public interface ViewsBoundedListener {
-        void onBindView(int position);
-    }
 }

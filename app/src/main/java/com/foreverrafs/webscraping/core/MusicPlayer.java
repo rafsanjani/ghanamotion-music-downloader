@@ -111,6 +111,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                 if (currentMusic.getHash() == selectedMusic.getHash()) {
                     Log.i(TAG, "Music is Paused::Attempting to resume");
                     Log.i(TAG, "Successfully Resumed::::Playing " + selectedMusic.getTitle());
+                    playerStatesListener.onPrepared();
                     player.start();
                     setPlayerState(PlayerState.playing);
                     playerStatesListener.onPlaying(selectedMusic);

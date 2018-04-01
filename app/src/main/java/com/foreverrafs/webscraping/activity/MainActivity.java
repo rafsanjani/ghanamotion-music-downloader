@@ -50,7 +50,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MusicAdapter.ClickListener, MusicAdapter.ViewsBoundedListener, ScrappingEventsListener, MusicPlayer.PlayerStatesListener, AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements MusicAdapter.ClickListener, ScrappingEventsListener, MusicPlayer.PlayerStatesListener, AdapterView.OnItemSelectedListener {
     private final String TAG = "musicscrapper";
     private final int writePermission = 1000;
     private MusicAdapter musicAdapter;
@@ -230,9 +230,9 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             case R.id.playBtnMain:
                 Log.i(TAG, "Play/Pause Button Invoked:::::position = " + position + ":::Previous Position = " + prevPosition);
                 try {
-                    if (musicPlayer.getPlayerState() == MusicPlayer.PlayerState.stopped ||
-                            musicPlayer.getPlayerState() == MusicPlayer.PlayerState.playing)
-                        holder.setLoadingProgressVisibility(true);
+                    // if (musicPlayer.getPlayerState() == MusicPlayer.PlayerState.stopped ||
+                    //        musicPlayer.getPlayerState() == MusicPlayer.PlayerState.playing)
+                    holder.setLoadingProgressVisibility(true);
                     musicPlayer.play(music);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -337,7 +337,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         //}
 
         musicAdapter.setClickListener(this);
-        musicAdapter.setViewsBoundedListener(this);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(musicAdapter);
@@ -421,15 +420,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         }
     }
 
-    @Override
-    public void onBindView(int position) {
-        Log.i(TAG, "EVENT FIRED");
-        if (musicAdapter.getSongAt(position).getHash() == musicPlayer.getCurrentMusic().getHash()) {
-            Log.i(TAG, holder.getTitle());
-            setStateChanges(musicPlayer.getPlayerState(), null, holder);
-
-        }
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

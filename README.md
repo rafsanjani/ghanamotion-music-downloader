@@ -18,6 +18,7 @@ project is intended only to serve educational purposes and nothing else.
 ## TODO
 * Optimize layouts according to Google Material Design standards
 * Reduce loading times by a factor of 2
+* Cache fetched songs for some hours which will contribute to loading time. 
 * Fix implicit bugs hiding in Mainactivity.java
 * Write unit and instrumentaion tests
 

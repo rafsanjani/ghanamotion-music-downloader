@@ -1,6 +1,9 @@
 # Ghanamotion Music Downloader
 This project provides a more convenient way of navigating, listening to and downloading music content from http://www.ghanamotion.com
 
+![photo_2018-04-01_12-02-22](https://user-images.githubusercontent.com/9197459/38172926-a3653d14-35a4-11e8-929b-066df81a5750.jpg)
+
+
 ## Disclaimer
 Even though the content provided on this application is from **(Ghana Motion Inc) http://www.ghanamotion.com/**, the end user experience whether desirable or not
 is entirely the liability of the developer(s) involved in the project and is in no way affiliated with Ghana Motion Inc. 

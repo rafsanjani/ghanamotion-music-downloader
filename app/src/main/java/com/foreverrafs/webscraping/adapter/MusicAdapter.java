@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,7 +50,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         this.clickListener = clickListener;
     }
 
-    public void setViewsBoundedListener(ViewsBoundedListener viewsBoundedListener){
+    public void setViewsBoundedListener(ViewsBoundedListener viewsBoundedListener) {
         this.viewsBoundedListener = viewsBoundedListener;
     }
 
@@ -90,7 +91,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             // holder.albumArt.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.music));
         } catch (Exception ex) {
             Log.i(TAG, "Error binding view item");
-            Log.e(TAG,ex.getMessage());
+            Log.e(TAG, ex.getMessage());
         }
 
         Log.i(TAG, "View Item Bounded");
@@ -126,9 +127,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         private ImageView playButton;
         private TextView title, fileSize;
         private ImageView download;
+        private ProgressBar progressBar;
 
         private RelativeLayout musicBackground;
-        public String getTitle(){
+
+        public String getTitle() {
             return title.getText().toString();
         }
 
@@ -148,7 +151,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             musicBackground = itemView.findViewById(R.id.music_background);
             fileSize = itemView.findViewById(R.id.textviewFileSize);
             download = itemView.findViewById(R.id.downloadBtnMain);
-
+            progressBar = itemView.findViewById(R.id.loadingProgress);
 
             TextView title = itemView.findViewById(R.id.title);
             Typeface typeface = Typeface.createFromAsset(mCtx.getAssets(), "fonts/Quotus-Bold.ttf");
@@ -160,6 +163,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             playButton.setOnClickListener(this);
             download.setOnClickListener(this);
         }
+
+        public void setLoadingProgressVisibility(boolean visible) {
+            progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+
+
 
         @Override
         public void onClick(View v) {
@@ -176,7 +185,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         void itemClicked(View view, int position, int prevPosition);
     }
 
-    public interface ViewsBoundedListener{
+    public interface ViewsBoundedListener {
         void onBindView(int position);
     }
 }

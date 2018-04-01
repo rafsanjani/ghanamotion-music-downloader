@@ -78,7 +78,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
     public void play(Music selectedMusic) throws IOException {
         if (isPreparing)
             return;
-        isPreparing = true;
+
         //get a handle to the currently loaded music in memory
         Music currentMusic = getCurrentMusic();
 
@@ -100,6 +100,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                     player.setDataSource(selectedMusic.getSongUrl());
                     //if (!isPreparing) {
                     player.prepareAsync();
+                    isPreparing = true;
                     //   isPreparing = true;
                     // }
 
@@ -120,6 +121,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                     setCurrentMusic(selectedMusic);
                     // if (!isPreparing) {
                     player.prepareAsync();
+                    isPreparing = true;
                     //    isPreparing = true;
                     //}
                 }
@@ -132,6 +134,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                 setCurrentMusic(selectedMusic);
                 // if (!isPreparing) {
                 player.prepareAsync();
+                isPreparing = true;
                 //    isPreparing = true;
                 //}
                 break;
@@ -196,6 +199,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
             player.start();
             if (player.isPlaying()) {
                 setPlayerState(PlayerState.playing);
+                playerStatesListener.onPrepared();
                 playerStatesListener.onPlaying(getCurrentMusic());
                 setCurrentMusic(getCurrentMusic());
                 playedList.add(getCurrentMusic());
@@ -215,6 +219,8 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
         void onPlaying(Music music);
 
         void onStopped();
+
+        void onPrepared();
 
         void onError(MediaPlayer mp);
 

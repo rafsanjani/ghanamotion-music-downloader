@@ -1,5 +1,6 @@
 package com.foreverrafs.webscraping.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
@@ -8,9 +9,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +50,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MusicAdapter.ClickListener, DownloadDialog.DownloadDialogListener, MusicAdapter.ViewsBoundedListener, ScrappingEventsListener, MusicPlayer.PlayerStatesListener, AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements MusicAdapter.ClickListener, MusicAdapter.ViewsBoundedListener, ScrappingEventsListener, MusicPlayer.PlayerStatesListener, AdapterView.OnItemSelectedListener {
     private final String TAG = "musicscrapper";
     private final int writePermission = 1000;
     private MusicAdapter musicAdapter;
@@ -221,12 +224,14 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         holder = (MusicAdapter.MusicViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
         prevHolder = (MusicAdapter.MusicViewHolder) recyclerView.findViewHolderForAdapterPosition(prevPosition);
 
-        Music music = musicAdapter.getSongAt(position);
+        final Music music = musicAdapter.getSongAt(position);
 
         switch (view.getId()) {
             case R.id.playBtnMain:
                 Log.i(TAG, "Play/Pause Button Invoked:::::position = " + position + ":::Previous Position = " + prevPosition);
                 try {
+                    if (musicPlayer.getPlayerState() == MusicPlayer.PlayerState.stopped)
+                        holder.setLoadingProgressVisibility(true);
                     musicPlayer.play(music);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -235,30 +240,35 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             case R.id.downloadBtnMain:
                 DownloadDialog downloadDialog = new DownloadDialog();
                 downloadDialog.setSongTitle(music.getTitle());
-                downloadDialog.show(getFragmentManager(), TAG);
+                downloadDialog.setDownloadDialogListener(new DownloadDialog.DownloadDialogListener() {
+                    @Override
+                    public void onDialogPositiveClick(DialogFragment dialog) {
+                        Log.i(TAG, "Download cancelled");
+                        String[] permissions = new String[1];
+                        permissions[0] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+                        musicToDownload = music;
 
+                        int permission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-                /*
-
-                Log.i(TAG, "Download Button Invoked:::::position = " + position + ":::Previous Position = " + prevPosition);
-
-                String[] permissions = new String[1];
-                permissions[0] = .permission.WRITE_EXTERNAL_STORAGE;
-
-                musicToDownload = music;
-
-                int permission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-                //request runtime permission on android 6+
-                if (permission != PackageManager.PERMISSION_GRANTED) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(permissions, writePermission);
+                        //request runtime permission on android 6+
+                        if (permission != PackageManager.PERMISSION_GRANTED) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                requestPermissions(permissions, writePermission);
+                            }
+                        } else {
+                            downloadMusic(musicToDownload);
+                        }
                     }
-                } else {
-                    downloadMusic(musicToDownload);
-                }
-                break;*/
+
+                    @Override
+                    public void onDialogNegativeClick(DialogFragment dialog) {
+
+                    }
+                });
+
+                downloadDialog.show(getFragmentManager(), "Download Dialog");
+                break;
         }
     }
 
@@ -297,7 +307,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     //TODO: Cache the search results for faster future searches and delete caches older than 5 hours or make it adjustable by user
     @Override
     public void onScrappingCompleted(List<Music> musicList) {
-
         if (!initialFetchCompleted) {
             setContentView(fetchedSongsView);
             Toolbar toolbar = findViewById(R.id.toolbar);
@@ -306,8 +315,15 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             init();
             initialFetchCompleted = true;
         }
-
+        //hide the loading overlay
         fetchedSongsView.findViewById(R.id.loading).setVisibility(View.GONE);
+
+        if (musicList.size() == 0) {
+            Log.i(TAG, "No Music Present::::suspending");
+            //fetchedSongsView.findViewById(R.id.search_empty_layout).setVisibility(View.VISIBLE);
+            return;
+        }
+
 
         Log.i(TAG, "scrapping completed with " + musicList.size() + " items returned");
 
@@ -328,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     @Override
     public void onScrappingStarted() {
-        Log.i(TAG, "Background Scrapper job has started :::");
+        Log.i(TAG, "Begin Fetching songs....");
     }
 
     @Override
@@ -340,8 +356,8 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     private void setStateChanges(MusicPlayer.PlayerState playerState, MusicAdapter.MusicViewHolder previous, MusicAdapter.MusicViewHolder current) {
         switch (playerState) {
             case playing:
+                Log.i(TAG, "Changing player UI  to reflect state of Playing");
                 if (previous != null) {
-                    Log.i(TAG, "Changing player UI  to reflect state of Playing");
                     previous.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
                     previous.setBackground(getResources().getColor(R.color.cardview_light_background));
                 }
@@ -349,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
                 if (current != null) {
                     current.setPlayButtonImage(getResources().getDrawable(R.drawable.pause_small));
                     current.setBackground(getResources().getColor(R.color.item_playing));
-
                 }
                 break;
 
@@ -358,12 +373,10 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
                 break;
             case stopped:
                 Log.i(TAG, "Changing player UI state to reflect state of Stopped");
-
-
                 break;
 
             default:
-
+                Log.i(TAG, "Indeterminate state");
                 break;
 
         }
@@ -372,13 +385,18 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     @Override
     public void onStopped() {
         Log.i(TAG, "Player stopped:::" + musicPlayer.getPlayerState());
-        holder.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
-        holder.setBackground(getResources().getColor(R.color.cardview_light_background));
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            playBtnLarge.setBackground(getResources().getDrawable(R.drawable.button_normal));
+        if (holder != null) {
+            holder.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
+            holder.setBackground(getResources().getColor(R.color.cardview_light_background));
+            holder.setLoadingProgressVisibility(false);
         }
-        */
+    }
+
+    @Override
+    public void onPrepared() {
+        if (holder != null) {
+            holder.setLoadingProgressVisibility(false);
+        }
     }
 
     @Override
@@ -396,7 +414,10 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     @Override
     public void onPaused(Music music) {
-        holder.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
+        if (holder != null) {
+            holder.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
+            holder.setLoadingProgressVisibility(false);
+        }
     }
 
     @Override
@@ -407,16 +428,6 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             setStateChanges(musicPlayer.getPlayerState(), null, holder);
 
         }
-    }
-
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        Log.i(TAG, "positive button clicked");
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-
     }
 
     @Override
@@ -432,6 +443,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             return;
         }
         fetchedSongsView.findViewById(R.id.loading).setVisibility(View.VISIBLE);
+        //fetchedSongsView.findViewById(R.id.search_empty_layout).setVisibility(View.GONE);
         scrapWebsite(String.format("http://www.ghanamotion.com/music/page%s", (position + 1)));
         intendedTouch = false;
     }

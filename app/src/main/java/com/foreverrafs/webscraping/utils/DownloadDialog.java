@@ -15,8 +15,6 @@ import android.widget.TextView;
 
 import com.foreverrafs.webscraping.R;
 
-import org.w3c.dom.Text;
-
 /**
  * Created by forev on 3/30/2018.
  */
@@ -46,20 +44,26 @@ public class DownloadDialog extends DialogFragment implements View.OnClickListen
     }
 
     DownloadDialogListener downloadDialogListener;
+    Context context;
 
     public void setSongTitle(String title) {
         this.title = title;
     }
 
-    public String getSongTitle(){
+    public String getSongTitle() {
         return title;
     }
 
     @Override
     public void onAttach(Context context) {
+        this.context = context;
         super.onAttach(context);
+
+    }
+
+    public void setDownloadDialogListener(DownloadDialogListener mListener) {
         try {
-            downloadDialogListener = (DownloadDialogListener) context;
+            downloadDialogListener = mListener;
         } catch (ClassCastException ex) {
             Log.e(TAG, "Interface not implemented yet");
             ex.printStackTrace();

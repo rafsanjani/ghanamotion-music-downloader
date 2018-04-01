@@ -42,4 +42,8 @@ dependencies {
 
     //apache commons codec
     compile 'commons-codec:commons-codec:1.11'
+
+    //searchview
+    compile 'com.miguelcatalan:materialsearchview:1.4.0'
+
 }

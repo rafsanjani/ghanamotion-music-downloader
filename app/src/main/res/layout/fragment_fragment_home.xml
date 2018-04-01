@@ -10,12 +10,14 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/musicList"
-        android:layout_below="@+id/toolbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
         android:visibility="visible" />
 
-
+    <include
+        android:id="@+id/loading"
+        layout="@layout/progress_loading_overlay" />
 
 </RelativeLayout>
 

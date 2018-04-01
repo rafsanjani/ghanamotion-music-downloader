@@ -2,9 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?attr/actionBarSize"
+    android:padding="5dp"
     android:background="@color/toolbar"
-    android:elevation="4dp"
     app:logo="@drawable/music_small"
     app:title=""
     tools:context=".activity.MainActivity">
@@ -12,8 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:text="Jump To"
+        android:text="@string/toolbar_goto"
         android:textSize="15sp" />
 
     <Spinner
@@ -21,13 +20,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.SearchView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-    </android.support.v7.widget.SearchView>
-
-
+    <EditText
+        android:id="@+id/searchSong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:drawableRight="@drawable/ic_action_action_search"
+        android:hint="@string/search"
+        android:imeOptions="actionDone"
+        android:inputType="textAutoComplete"
+        android:maxLines="1"
+        android:drawableEnd="@drawable/ic_action_action_search" />
 
 
 </android.support.v7.widget.Toolbar>

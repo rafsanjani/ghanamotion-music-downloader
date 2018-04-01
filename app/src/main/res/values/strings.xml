@@ -7,7 +7,6 @@
     <string name="play">Play</string>
     <string name="file_size">File size: </string>
     <string name="title_activity_splash">SplashActivity</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="toolbar_goto">Go To:</string>
+    <string name="search">Search...</string>
 </resources>

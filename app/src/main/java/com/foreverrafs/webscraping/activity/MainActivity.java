@@ -13,14 +13,20 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.foreverrafs.webscraping.R;
@@ -55,7 +61,10 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     private boolean initialFetchCompleted = false;
     private Music musicToDownload;
-    View fetchedSongsView;
+    private View fetchedSongsView;
+    private View progressBarLoadingOverlay;
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +82,9 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
 
     private void init() {
+        progressBarLoadingOverlay =  findViewById(R.id.loading);
         recyclerView = findViewById(R.id.musicList);
-
+        //searchView = findViewById(R.id.search_view);
         final LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
 
 
@@ -108,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         playBtnLarge = findViewById(R.id.mediaPlayBtn);
 
         List<String> pageList = new ArrayList<>();
-        for (int a = 1; a < 10; a++) {
+        for (int a = 1; a <= 10; a++) {
             pageList.add("Page " + a);
         }
 
@@ -125,6 +135,34 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
                 return false;
             }
         });
+
+        final EditText txtSearch = findViewById(R.id.searchSong);
+        txtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_DONE:
+                        String query = txtSearch.getText().toString();
+
+                        Log.i(TAG, "Searching for " + query);
+                        fetchedSongsView.findViewById(R.id.loading).setVisibility(View.VISIBLE);
+
+                        scrapWebsite(String.format("http://www.ghanamotion.com/?s=%s", query));
+
+                        /*
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setView(getLayoutInflater().inflate(R.layout.progress_loading_overlay,null   ))
+                                .create();
+
+                        builder.show();
+                        */
+
+                        break;
+                }
+                return false;
+            }
+        });
+
     }
 
 
@@ -188,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
         Music music = musicAdapter.getSongAt(position);
 
+        //FIXME: pausing only works for first page and doesn't work when other pages are loaded
         switch (view.getId()) {
             case R.id.playBtnMain:
                 Log.i(TAG, "Play/Pause Button Invoked:::::position = " + position + ":::Previous Position = " + prevPosition);
@@ -271,6 +310,8 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             init();
             initialFetchCompleted = true;
         }
+
+        fetchedSongsView.findViewById(R.id.loading).setVisibility(View.GONE);
 
         Log.i(TAG, "scrapping completed with " + musicList.size() + " items returned");
 

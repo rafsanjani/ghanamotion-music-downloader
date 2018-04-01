@@ -13,14 +13,14 @@
            android:layout_height="wrap_content"
            android:layout_gravity="center"
            android:src="@drawable/no_network"
-           android:layout_marginBottom="30dp"/>
+           android:layout_marginBottom="@dimen/network_logo_margin"/>
 
 
        <TextView
            android:id="@+id/dessert"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:textColor="#000000"
+           android:textColor="@color/material_light_primary_text"
            android:textStyle="bold"
            android:textAlignment="center"
            android:text="@string/no_internet" />

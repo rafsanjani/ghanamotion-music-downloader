@@ -399,8 +399,14 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         }
     }
 
+    
     @Override
     public void onError(MediaPlayer mp) {
+        if (holder != null) {
+            holder.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
+            holder.setBackground(getResources().getColor(R.color.cardview_light_background));
+            holder.setLoadingProgressVisibility(false);
+        }
         Log.e(TAG, "Error playing media");
         Toast.makeText(MainActivity.this, "Error during playback!", Toast.LENGTH_LONG).show();
     }

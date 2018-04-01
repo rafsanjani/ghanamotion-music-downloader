@@ -190,6 +190,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        isPreparing = false;
         playerStatesListener.onError(mp);
         return true;
     }

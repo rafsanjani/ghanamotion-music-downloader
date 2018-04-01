@@ -230,7 +230,8 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             case R.id.playBtnMain:
                 Log.i(TAG, "Play/Pause Button Invoked:::::position = " + position + ":::Previous Position = " + prevPosition);
                 try {
-                    if (musicPlayer.getPlayerState() == MusicPlayer.PlayerState.stopped)
+                    if (musicPlayer.getPlayerState() == MusicPlayer.PlayerState.stopped ||
+                            musicPlayer.getPlayerState() == MusicPlayer.PlayerState.playing)
                         holder.setLoadingProgressVisibility(true);
                     musicPlayer.play(music);
                 } catch (Exception e) {

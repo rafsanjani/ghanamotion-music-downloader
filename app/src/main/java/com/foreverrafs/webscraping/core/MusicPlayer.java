@@ -183,6 +183,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        isPreparing = false;
         setPlayerState(PlayerState.stopped);
         playerStatesListener.onStopped();
         Log.i(TAG, "Finished playing current file::::" + getPlayerState());

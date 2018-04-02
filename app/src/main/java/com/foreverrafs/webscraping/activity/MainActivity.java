@@ -354,14 +354,14 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     //set appropriate images and colors based on player state
     private void setStateChanges(MusicPlayer.PlayerState playerState, MusicAdapter.MusicViewHolder previous, MusicAdapter.MusicViewHolder current) {
+        if (previous != null) {
+            previous.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
+            previous.setBackground(getResources().getColor(R.color.cardview_light_background));
+        }
+
         switch (playerState) {
             case playing:
                 Log.i(TAG, "Changing player UI  to reflect state of Playing");
-                if (previous != null) {
-                    previous.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
-                    previous.setBackground(getResources().getColor(R.color.cardview_light_background));
-                }
-
                 if (current != null) {
                     current.setPlayButtonImage(getResources().getDrawable(R.drawable.pause_small));
                     current.setBackground(getResources().getColor(R.color.item_playing));
@@ -370,9 +370,18 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
             case paused:
                 Log.i(TAG, "Changing player UI to reflect state of Paused");
+                if (holder != null) {
+                    holder.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
+                    holder.setLoadingProgressVisibility(false);
+                }
                 break;
             case stopped:
                 Log.i(TAG, "Changing player UI state to reflect state of Stopped");
+                if (holder != null) {
+                    holder.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
+                    holder.setBackground(getResources().getColor(R.color.cardview_light_background));
+                    holder.setLoadingProgressVisibility(false);
+                }
                 break;
 
             default:
@@ -385,11 +394,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     @Override
     public void onStopped() {
         Log.i(TAG, "Player stopped:::" + musicPlayer.getPlayerState());
-        if (holder != null) {
-            holder.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
-            holder.setBackground(getResources().getColor(R.color.cardview_light_background));
-            holder.setLoadingProgressVisibility(false);
-        }
+        setStateChanges(musicPlayer.getPlayerState(), prevHolder, holder);
     }
 
     @Override
@@ -399,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
         }
     }
 
-    
+
     @Override
     public void onError(MediaPlayer mp) {
         if (holder != null) {
@@ -420,10 +425,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     @Override
     public void onPaused(Music music) {
-        if (holder != null) {
-            holder.setPlayButtonImage(getResources().getDrawable(R.drawable.play_small));
-            holder.setLoadingProgressVisibility(false);
-        }
+      setStateChanges(musicPlayer.getPlayerState(), prevHolder, holder);
     }
 
 

@@ -91,7 +91,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                     Log.i(TAG, "Attempting to Pause");
                     player.pause();
                     setPlayerState(PlayerState.paused);
-                    playerStatesListener.onPaused(selectedMusic);
+                    playerStatesListener.onPause(selectedMusic);
                 } else {
                     Log.i(TAG, "New file detected::::attempting to play::" + selectedMusic.getTitle());
                     player.reset();
@@ -115,7 +115,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                     player.start();
                     setPlayerState(PlayerState.playing);
                     playerStatesListener.onPrepared();
-                    playerStatesListener.onPlaying(selectedMusic);
+                    playerStatesListener.onPlay(selectedMusic);
                 } else {
                     Log.i(TAG, "New file detected::::attempting to play::" + selectedMusic.getTitle());
                     player.reset();
@@ -156,7 +156,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
         player.reset();
 
         setPlayerState(PlayerState.stopped);
-        playerStatesListener.onStopped();
+        playerStatesListener.onStop();
         Log.i(TAG, "Music is stopped:::" + getPlayerState());
     }
 
@@ -170,7 +170,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
         }
         player.stop();
         setPlayerState(playerState.paused);
-        playerStatesListener.onPaused(currentMusic);
+        playerStatesListener.onPause(currentMusic);
         Log.i(TAG, "Music is Paused:::" + getPlayerState());
     }
 
@@ -186,7 +186,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
     public void onCompletion(MediaPlayer mp) {
         isPreparing = false;
         setPlayerState(PlayerState.stopped);
-        playerStatesListener.onStopped();
+        playerStatesListener.onStop();
         Log.i(TAG, "Finished playing current file::::" + getPlayerState());
     }
 
@@ -204,7 +204,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
             if (player.isPlaying()) {
                 setPlayerState(PlayerState.playing);
                 playerStatesListener.onPrepared();
-                playerStatesListener.onPlaying(getCurrentMusic());
+                playerStatesListener.onPlay(getCurrentMusic());
                 setCurrentMusic(getCurrentMusic());
                 playedList.add(getCurrentMusic());
             }
@@ -220,14 +220,14 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
     }
 
     public interface PlayerStatesListener {
-        void onPlaying(Music music);
+        void onPlay(Music music);
 
-        void onStopped();
+        void onStop();
 
         void onPrepared();
 
         void onError(MediaPlayer mp);
 
-        void onPaused(Music music);
+        void onPause(Music music);
     }
 }

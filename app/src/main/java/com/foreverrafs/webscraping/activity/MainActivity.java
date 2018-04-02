@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     }
 
     @Override
-    public void onPlaying(Music music) {
+    public void onPlay(Music music) {
         setStateChanges(musicPlayer.getPlayerState(), prevHolder, holder);
     }
 
@@ -404,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     }
 
     @Override
-    public void onStopped() {
+    public void onStop() {
         Log.i(TAG, "Player stopped:::" + musicPlayer.getPlayerState());
         setStateChanges(musicPlayer.getPlayerState(), prevHolder, holder);
     }
@@ -436,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
 
     @Override
-    public void onPaused(Music music) {
+    public void onPause(Music music) {
         setStateChanges(musicPlayer.getPlayerState(), prevHolder, holder);
     }
 

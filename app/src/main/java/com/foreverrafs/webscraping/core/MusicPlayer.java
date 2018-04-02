@@ -90,8 +90,8 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                 if (currentMusic.getHash() == selectedMusic.getHash()) {
                     Log.i(TAG, "Attempting to Pause");
                     player.pause();
-                    playerStatesListener.onPaused(selectedMusic);
                     setPlayerState(PlayerState.paused);
+                    playerStatesListener.onPaused(selectedMusic);
                 } else {
                     Log.i(TAG, "New file detected::::attempting to play::" + selectedMusic.getTitle());
                     player.reset();
@@ -111,9 +111,10 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener, MediaPlaye
                 if (currentMusic.getHash() == selectedMusic.getHash()) {
                     Log.i(TAG, "Music is Paused::Attempting to resume");
                     Log.i(TAG, "Successfully Resumed::::Playing " + selectedMusic.getTitle());
-                    playerStatesListener.onPrepared();
+
                     player.start();
                     setPlayerState(PlayerState.playing);
+                    playerStatesListener.onPrepared();
                     playerStatesListener.onPlaying(selectedMusic);
                 } else {
                     Log.i(TAG, "New file detected::::attempting to play::" + selectedMusic.getTitle());

@@ -11,13 +11,12 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by forev on 3/8/2018.
@@ -26,9 +25,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MusicScraper extends AsyncTask<String, Long, List<Music>> {
     public final String TAG = "musicscrapper";
     private ScrappingEventsListener scrappingEventsListener = null;
-
-
-    private final Lock lock = new ReentrantLock();
 
     private static ScrapperState state;
 
@@ -60,6 +56,16 @@ public class MusicScraper extends AsyncTask<String, Long, List<Music>> {
         }
 
         Log.i(TAG, "Items Added: " + musicList.size());
+        Log.i(TAG, "Fetching the file sizes");
+
+        String[] sizeArgs = new String[musicList.size()];
+
+        for (int a = 0; a < musicList.size(); a++) {
+            sizeArgs[a] = musicList.get(a).getSongUrl();
+        }
+
+        new MusicSizeChecker().execute(sizeArgs);
+
         scrappingEventsListener.onScrappingCompleted(musicList);
     }
 
@@ -70,60 +76,75 @@ public class MusicScraper extends AsyncTask<String, Long, List<Music>> {
 
         List<Music> musicList = new ArrayList<>();
 
-        if (lock.tryLock()) {
+        Log.i(TAG, "starting background job");
+        int urlsCount = urls.length;
+        Music music = null;
+        for (int i = 0; i < urlsCount; i++) {
+            music = new Music();
+            Log.i(TAG, "Begin scraping: " + urls[i]);
+            Connection con = Jsoup.connect(urls[i]);
+
             try {
-                Log.i(TAG, "starting background job");
-                int urlsCount = urls.length;
-                Music music = null;
-                for (int i = 0; i < urlsCount; i++) {
-                    music = new Music();
-                    Log.i(TAG, "Begin scraping: " + urls[i]);
-                    Connection con = Jsoup.connect(urls[i]);
+                org.jsoup.nodes.Document dom = con.get();
+                Element mp3Element = dom.selectFirst(".zbPlayer").selectFirst(".zbPlayerNativeMobile");
+                Element imageElement = dom.select("p img").first();
 
-                    try {
-                        org.jsoup.nodes.Document dom = con.get();
-                        Element mp3Element = dom.selectFirst(".zbPlayer").selectFirst(".zbPlayerNativeMobile");
-                        Element imageElement = dom.select("p img").first();
+                Element titleElement = dom.selectFirst(".post-inner").select("span").first();
 
-                        Element titleElement = dom.selectFirst(".post-inner").select("span").first();
+                String mp3Url = mp3Element.attr("src");
+                String imgUrl = imageElement.attr("src");
 
-                        String mp3Url = mp3Element.attr("src");
-                        String imgUrl = imageElement.attr("src");
-
-                        music.setTitle(titleElement.text());
-                        music.setSongUrl(mp3Url);
-                        music.setImageUrl(imgUrl);
+                music.setTitle(titleElement.text());
+                music.setSongUrl(mp3Url);
+                music.setImageUrl(imgUrl);
 
 
-                        String hash = new String(Hex.encodeHex(DigestUtils.md5(music.getTitle() + music.getSongUrl())));
-                        music.setHash(hash);
+                String hash = new String(Hex.encodeHex(DigestUtils.md5(music.getTitle() + music.getSongUrl())));
+                music.setHash(hash);
 
-                        URLConnection urlConnection = new URL(music.getSongUrl()).openConnection();
-                        urlConnection.connect();
-                        music.setFileSize(urlConnection.getContentLength());
+                //URLConnection urlConnection = new URL(music.getSongUrl()).openConnection();
+                //urlConnection.connect();
+                //music.setFileSize(urlConnection.getContentLength());
 
-                        Log.i(TAG, "Title: " + music.getTitle());
-                        Log.i(TAG, "url: " + music.getSongUrl());
-                        Log.i(TAG, "Image Url: " + music.getImageUrl() + "\\n");
-                        Log.i(TAG, "Hash : " + music.getHash());
-                        Log.i(TAG, "Size : " + music.getFileSize());
+                Log.i(TAG, "Title: " + music.getTitle());
+                Log.i(TAG, "url: " + music.getSongUrl());
+                Log.i(TAG, "Image Url: " + music.getImageUrl() + "\\n");
+                Log.i(TAG, "Hash : " + music.getHash());
+                Log.i(TAG, "Size : " + music.getFileSize());
 
 
-                    } catch (Exception e) {
-                        Log.i(TAG, "Scrapper Error " );
-                        e.printStackTrace();
-                        music.setIncompleteSong(true);
-                    }
-                    musicList.add(music);
-                }
-
-            } finally {
-                lock.unlock();
+            } catch (Exception e) {
+                Log.i(TAG, "Scrapper Error ");
+                e.printStackTrace();
+                music.setIncompleteSong(true);
             }
-        } else {
-            Log.i(TAG, "error acquiring lock on thread");
+            musicList.add(music);
         }
         return musicList;
+    }
+
+    public class MusicSizeChecker extends AsyncTask<String, Long, List<String>> {
+
+        @Override
+        protected List<String> doInBackground(String... strings) {
+            List<String> musicSizes = new ArrayList<>();
+
+            for (int a = 0; a < strings.length; a++) {
+                try {
+                    URLConnection urlConnection = new URL(strings[a]).openConnection();
+                    musicSizes.add(String.valueOf(urlConnection.getContentLength()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return musicSizes;
+        }
+
+        @Override
+        protected void onPostExecute(List<String> result) {
+            scrappingEventsListener.onMusicSizesFetchCompleted(result);
+        }
+
     }
 
     public enum ScrapperState {

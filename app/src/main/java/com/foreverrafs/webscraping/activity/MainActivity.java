@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -348,6 +349,17 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
     }
 
     @Override
+    public void onMusicSizesFetchCompleted(List<String> musicSizes) {
+
+        Log.i(TAG, "music sizes has been fetched successfully. Returned " + musicSizes.size() + " items");
+        for (int a = 0; a < musicSizes.size(); a++) {
+            // viewHolder = (MusicAdapter.MusicViewHolder) recyclerView.findViewHolderForAdapterPosition(a);
+            musicAdapter.getSongAt(a).setFileSize(Long.valueOf(musicSizes.get(a)));
+            musicAdapter.notifyItemChanged(a);
+        }
+    }
+
+    @Override
     public void onPlaying(Music music) {
         setStateChanges(musicPlayer.getPlayerState(), prevHolder, holder);
     }
@@ -425,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
 
     @Override
     public void onPaused(Music music) {
-      setStateChanges(musicPlayer.getPlayerState(), prevHolder, holder);
+        setStateChanges(musicPlayer.getPlayerState(), prevHolder, holder);
     }
 
 
@@ -441,9 +453,12 @@ public class MainActivity extends AppCompatActivity implements MusicAdapter.Clic
             Log.i(TAG, "Initial fetch isn't completed yet::::Suspending");
             return;
         }
-        fetchedSongsView.findViewById(R.id.loading).setVisibility(View.VISIBLE);
-        //fetchedSongsView.findViewById(R.id.search_empty_layout).setVisibility(View.GONE);
-        scrapWebsite(String.format("http://www.ghanamotion.com/music/page%s", (position + 1)));
+        View loadingScreen = fetchedSongsView.findViewById(R.id.loading);
+        loadingScreen.setVisibility(View.VISIBLE);
+
+        if (loadingScreen.getVisibility() == View.VISIBLE) {
+            scrapWebsite(String.format("http://www.ghanamotion.com/music/page%s", (position + 1)));
+        }
         intendedTouch = false;
     }
 

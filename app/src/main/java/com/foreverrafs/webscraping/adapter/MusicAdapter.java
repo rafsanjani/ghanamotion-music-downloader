@@ -91,7 +91,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             Log.e(TAG, ex.getMessage());
         }
 
-        Log.i(TAG, "View Item Bounded");
     }
 
     @Override
@@ -136,6 +135,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             playButton.setImageDrawable(drawable);
         }
 
+        public void setFileSize(long size) {
+
+        }
+
         public void setBackground(int color) {
             musicBackground.setBackgroundColor(color);
         }
@@ -164,7 +167,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         public void setLoadingProgressVisibility(boolean visible) {
             progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
-
 
 
         @Override

@@ -11,4 +11,5 @@ import java.util.List;
 public interface ScrappingEventsListener {
     void onScrappingCompleted(List<Music> musicList);
     void onScrappingStarted();
+    void onMusicSizesFetchCompleted(List<String> musicSizes);
 }
